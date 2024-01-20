@@ -1,2 +1,0 @@
-# wings-hackathon-3
-
