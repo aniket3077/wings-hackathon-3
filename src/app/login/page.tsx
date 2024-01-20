@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,12 +18,7 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 
 const newUserSchema = z.object({
-  username: z
-    .string()
-    .min(3, {
-      message: "Username must be at least 3 characters.",
-    })
-    .max(20),
+  
   email: z.string().email(),
   password: z
     .string()
@@ -33,25 +27,31 @@ const newUserSchema = z.object({
     })
     .max(100),
 });
+
+
+export let USERID="";
+
 function CreateAccont() {
   const router = useRouter();
   const form = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof newUserSchema>) {
+    console.log("hello")
     console.log(values);
     const res = await axios.post(
-      "http://localhost:3000/api/users/createaccount",
+      "/api/users/login",
       values
     );
     console.log("Signup response", res);
-    router.push("/login");
+    const profile = await axios.get("/api/users/me");
+    USERID=profile.data.data._id;
+    router.push(`/profile/${profile.data.data._id}`);
   }
   return (
     <div>

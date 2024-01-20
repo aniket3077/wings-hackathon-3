@@ -67,7 +67,7 @@ function CreateAccont() {
   async function onSubmit(values: z.infer<typeof newUserSchema>) {
     console.log(values);
     const res = await axios.post(
-      "http://localhost:3000/api/users/createacc",
+      `${process.env.DOMAIN}/api/users/createacc`,
       values
     );
     console.log("Signup response", res);

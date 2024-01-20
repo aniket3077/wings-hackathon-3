@@ -1,43 +1,35 @@
-import { connect } from "@/dbconfig/dbconfig";
-import User from "@/models/userModel";
-
 import { NextRequest, NextResponse } from "next/server";
+import User from "@/models/userModel";
+import { connect } from "@/dbconfig/dbconfig";
 import bcryptjs from "bcryptjs";
 import { sendEmailVerify } from "@/helpers/mailer";
 
 connect();
-
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, response: NextResponse) {
   try {
-    const reqBody = await request.json();
-    const { username, email,college,password } = reqBody;
-
-    console.log(reqBody);
-
+    const reqBody = request.json();
+    const { username, email, password } = await reqBody;
     //check if user already exists
     const user = await User.findOne({ email });
 
     if (user) {
       return NextResponse.json(
         { error: "User already exists" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     //hash password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
-   console.log("hello1") 
+
     const newUser = new User({
       username,
       email,
-      college,
       password: hashedPassword,
     });
-
-   console.log("hello2") 
+    console.log("hello")
     const savedUser = await newUser.save();
-   console.log("hello3") 
     console.log(savedUser);
 
     //send verification email

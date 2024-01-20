@@ -15,10 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required:[true,"Please provide a college name"]
     },
-    // project:{
-    //     type:Schema.Types.ObjectId,
-    //     ref:"Project"
-    // } ,
+    project:{
+        type:Schema.Types.ObjectId,
+        ref:"Project"
+    } ,
     password: {
         type: String,
         required: [true, "Please provide a password"],
@@ -37,6 +37,6 @@ const userSchema = new mongoose.Schema({
     verifyTokenExpiry: Date,
 })
 
-const User = mongoose.models.users || mongoose.model("Users", userSchema);
+const User = mongoose.models.users || mongoose.model("users", userSchema);
 
 export default User;
