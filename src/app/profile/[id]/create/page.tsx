@@ -13,9 +13,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../../../components/ui/select";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -24,16 +24,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
 import axios from "axios";
-import { useEffect } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
-import { RecoilRoot } from "recoil";
-import Editor from "@/components/Editor";
-import Preview from "@/components/Preview";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "../../../../components/ui/textarea";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
 const newUserSchema = z.object({
   projectname: z
@@ -45,8 +42,16 @@ const newUserSchema = z.object({
   description: z.string(),
   members: z.array(z.string()),
   college: z.string().max(100),
+  markdown: z.string(),
 });
 function CreateProject() {
+  const [course, setCourse] = useState({
+    name: "",
+    description: "",
+    members: [],
+    college: "",
+    markdown: "",
+  });
   const getColleges = async () => {
     try {
       await axios.get("/api/college");
@@ -55,110 +60,96 @@ function CreateProject() {
     }
   };
   const router = useRouter();
-  const form = useForm<z.infer<typeof newUserSchema>>({
-    resolver: zodResolver(newUserSchema),
-    defaultValues: {
-      projectname: "",
-      description: "",
-      members: [],
-      college: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof newUserSchema>) {
-    console.log(values);
-    const res = await axios.post(
-      `${process.env.DOMAIN}/api/users/createacc`,
-      values
-    );
-    console.log("Signup response", res);
-    router.push("/login");
-  }
+  // const form = useForm<z.infer<typeof newUserSchema>>({
+  //   resolver: zodResolver(newUserSchema),
+  //   defaultValues: {
+  //     projectname: "",
+  //     description: "",
+  //     members: [],
+  //     college: "",
+  //     markdown: "",
+  //   },
+  // });
+  // async function onSubmit(values: z.infer<typeof newUserSchema>) {
+  // setMarkdown(values.markdown);
+  // const res = await axios.post(
+  //   `${process.env.DOMAIN}/api/users/create`,
+  //   values
+  // );
+  // console.log("Signup response", res);
+  // router.push("/login");
+  // }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(course);
+      await axios.post("/api/users/project", course);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
-    <RecoilRoot>
-      <div className="">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8  flex flex-col   mt-20"
+    <div className="">
+      <form
+        onSubmit={handleSubmit}
+        action=""
+        className="flex flex-col m-6 justify-center items-center gap-10"
+      >
+        <label htmlFor="">
+          Project Name
+          <hr />
+          <input
+          value={course.name}
+            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+            className="border-black border-2"
+            type="text"
+          />
+        </label>
+        <label htmlFor="">
+          Description
+          <hr />
+          <textarea
+            onChange={(e) =>
+              setCourse({ ...course, description: e.target.value })
+            }
+            className="border-black border-2"
+          />
+        </label>
+        <label htmlFor="college">
+          College :{" "}
+          <select
+            id="college"
+            onChange={(e) => setCourse({ ...course, college: e.target.value })}
+            name="college"
           >
-            <div className=" mx-[30vw] ">
-              <FormField
-                control={form.control}
-                name="projectname"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="college"
-                render={({ field }) => (
-                  <FormItem className="z-10">
-                    <FormLabel>College</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a College" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-black text-white">
-                        <SelectItem value="Mit Aurangabad">
-                          Gramodyogik Shikshan Prasarak Mandals Maharashtra
-                          Institute of Technology
-                        </SelectItem>
-                        <SelectItem value="Dr. Babasaheb Ambedkar Smarak Samiti Aurangabad">
-                          Dr. Babasaheb Ambedkar Smarak Samiti Aurangabad
-                        </SelectItem>
-                        <SelectItem value="Goverment college of Engineering Aurangabad">
-                          Goverment college of Engineering Aurangabad
-                        </SelectItem>
-                        <SelectItem value="Deogiri Institute of Engineering">
-                          Deogiri Institute of Engineering
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+            <option value="CSMSS College of Engineering">
+              CSMSS College of Engineering
+            </option>
+            <option value="Mit Aurangabad">Mit Aurangabad</option>
+            <option value="Deogiri Institute of Engineering">
+              Deogiri Institute of Engineering
+            </option>
+          </select>
+        </label>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea rows={5} placeholder="" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-                <Label className="flex justify-center text-lg">Add Markdown</Label>
-            <div className="flex mx-6  gap-5 flex-wrap md:items-center md:justify-center lg:flex-row flex-col">
-              <Editor />
-              <Preview />
-            </div>
-            <Button className="bottom-0 bg-black text-white" type="submit">
-              Add Project
-            </Button>
-          </form>
-        </Form>
-      </div>
-    </RecoilRoot>
+        <div className="flex">
+          <div>
+            <textarea
+              value={course.markdown}
+              placeholder="write markdown here"
+              onChange={(e) =>
+                setCourse({ ...course, markdown: e.target.value })
+              }
+              className=" p-3 border-2 lg:border-black lg:h-[80vh] lg:w-[40vw] h-[44vh] "
+            />
+          </div>
+          <div className="overflow-scroll p-3 prose lg:prose-sm border-2 border-black  h-[44vh]  lg:w-[40vw] lg:h-[80vh]">
+            <Markdown remarkPlugins={[remarkGfm]}>{course.markdown}</Markdown>
+          </div>
+        </div>
+        <button className="bg-black px-3 py-2 text-white" type="submit">Add Project</button>
+      </form>
+    </div>
   );
 }
 

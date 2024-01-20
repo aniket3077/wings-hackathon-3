@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { RecoilRoot } from "recoil";
 
 export default function Home() {
   return (
-      <main className="">
-        <Button>Click me</Button>
-      </main>
+    <main className="">
+      <Button>Click me</Button>
+    </main>
   );
 }

@@ -5,7 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,12 +13,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 import axios from "axios";
 
 const newUserSchema = z.object({
-  
   email: z.string().email(),
   password: z
     .string()
@@ -28,8 +27,7 @@ const newUserSchema = z.object({
     .max(100),
 });
 
-
-export let USERID="";
+export let USERID = "";
 
 function CreateAccont() {
   const router = useRouter();
@@ -42,15 +40,12 @@ function CreateAccont() {
   });
 
   async function onSubmit(values: z.infer<typeof newUserSchema>) {
-    console.log("hello")
+    console.log("hello");
     console.log(values);
-    const res = await axios.post(
-      "/api/users/login",
-      values
-    );
+    const res = await axios.post("/api/users/login", values);
     console.log("Signup response", res);
     const profile = await axios.get("/api/users/me");
-    USERID=profile.data.data._id;
+    USERID = profile.data.data._id;
     router.push(`/profile/${profile.data.data._id}`);
   }
   return (

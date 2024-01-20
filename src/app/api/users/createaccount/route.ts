@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/userModel";
-import { connect } from "@/dbconfig/dbconfig";
+import User from "../../../../models/userModel";
+import { connect } from "../../../../dbconfig/dbconfig";
 import bcryptjs from "bcryptjs";
-import { sendEmailVerify } from "@/helpers/mailer";
+import { sendEmailVerify } from "../../../../helpers/mailer";
 
 connect();
 export async function POST(request: NextRequest, response: NextResponse) {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
       email,
       password: hashedPassword,
     });
-    console.log("hello")
+    console.log("hello");
     const savedUser = await newUser.save();
     console.log(savedUser);
 

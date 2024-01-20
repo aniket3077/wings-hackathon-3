@@ -1,16 +1,16 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import {USERID} from "@/app/login/page"
+import { USERID } from "./app/login/page";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-//   const userid = async () => {
-//     const res = await axios.get(`${process.env.DOMAIN}/api/users/me`);
-//     console.log(res.data.data._id);
-//     return res.data.data._id;
-//     //   return "";
-//   };
+  //   const userid = async () => {
+  //     const res = await axios.get(`${process.env.DOMAIN}/api/users/me`);
+  //     console.log(res.data.data._id);
+  //     return res.data.data._id;
+  //     //   return "";
+  //   };
   const isPublicPath =
     path === "/login" || path === "/createacc" || path === "/verifyemail";
 

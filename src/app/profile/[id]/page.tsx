@@ -4,14 +4,20 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useSetRecoilState,useRecoilValue, RecoilRoot } from "recoil";
-import {userId}from "@/store/atom/user"
-import Navbar from "@/components/Navbar";
+import { useSetRecoilState, useRecoilValue, RecoilRoot } from "recoil";
+import { userId } from "@/store/atom/user";
+import Navbar from "../../../components/Navbar";
 export default function ProfilePage() {
   const router = useRouter();
   const [data, setData] = useState("nothing");
-//   const setUserId = useSetRecoilState(userId);
-//   const data = useRecoilValue(userId);
+  const [user, setUser] = useState({
+    projectname: "",
+    collegename: "",
+    projectdescription: "",
+    markdown: "",
+  });
+  //   const setUserId = useSetRecoilState(userId);
+  //   const data = useRecoilValue(userId);
   const logout = async () => {
     try {
       await axios.get("/api/users/logout");

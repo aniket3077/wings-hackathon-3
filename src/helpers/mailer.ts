@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import User from "@/models/userModel";
+import User from "../models/userModel";
 import bcryptjs from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -21,8 +21,8 @@ export const sendEmailVerify = async ({ email, emailType, userId }: any) => {
     }
 
     var transport = nodemailer.createTransport({
-      service:"gmail",
-    //   port: 2525,
+      service: "gmail",
+      //   port: 2525,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD,
@@ -45,15 +45,17 @@ export const sendEmailVerify = async ({ email, emailType, userId }: any) => {
             </p>`,
     };
     console.log("hello");
-    const mailresponse = await transport.sendMail(mailOptions,(error,info) => {
-        if(error){
-            console.log(error);
+    const mailresponse = await transport.sendMail(
+      mailOptions,
+      (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
         }
-        else{
-            console.log("Email sent: "+ info.response);
-        }
-    });
-    console.log("world")
+      }
+    );
+    console.log("world");
     return mailresponse;
   } catch (error: any) {
     throw new Error(error.message);
